@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reben Petroleum — Continued Stock</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f6f2ea;
+    --paper-2:#efe9dc;
+    --card:#fffdf8;
+    --ink:#1c2430;
+    --ink-soft:#5b6472;
+    --line:#e4dcc9;
+    --gold:#b8801f;
+    --gold-deep:#8a5f13;
+    --teal:#1f6f6b;
+    --rose:#a7382f;
+    --amber-bg:#fbeed6;
+    --teal-bg:#e0efee;
+    --rose-bg:#f6e2df;
+    --ok:#2f7d4f;
+    --ok-bg:#e3f1e6;
+    --crit:#b3261e;
+    --crit-bg:#fbe2e0;
+    /* fuel colors — matched to the actual pump colors staff see at the station */
+    --p91:#1e7d32;
+    --p91-bg:#e2f2e4;
+    --p95:#c62828;
+    --p95-bg:#fbe4e4;
+    --pd:#c9970a;
+    --pd-bg:#fdf1d6;
+    --shadow: 0 1px 2px rgba(28,36,48,.04), 0 8px 24px -12px rgba(28,36,48,.12);
+    --radius: 16px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html{ overflow-x:hidden; }
+  html,body{margin:0;padding:0; width:100%; max-width:100%;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 100% -10%, #efe4c9 0%, transparent 60%),
+      radial-gradient(900px 500px at -10% 10%, #e7ece6 0%, transparent 55%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'Public Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  .noise{
+    position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.035; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .wrap{ position:relative; z-index:1; max-width:1180px; margin:0 auto; padding:28px 20px 80px; }
+
+  header.top{
+    display:flex; justify-content:space-between; align-items:flex-end; gap:20px;
+    flex-wrap:wrap; margin-bottom:26px; padding-bottom:22px; border-bottom:1px solid var(--line);
+  }
+  .brand{ display:flex; align-items:center; gap:14px; }
+  .brand-mark{
+    width:46px; height:46px; border-radius:12px; flex:none;
+    background:linear-gradient(155deg, var(--gold) 0%, var(--gold-deep) 100%);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: var(--shadow);
+  }
+  .brand-mark svg{width:24px;height:24px;}
+  h1{
+    font-family:'Bricolage Grotesque', sans-serif;
+    font-weight:700; font-size:28px; letter-spacing:-0.01em; margin:0; line-height:1.1;
+  }
+  .brand p{ margin:3px 0 0; color:var(--ink-soft); font-size:13.5px; }
+  .top-right{ display:flex; align-items:center; gap:10px; }
+  .sync-pill{
+    display:flex; align-items:center; gap:8px;
+    background:var(--card); border:1px solid var(--line); border-radius:999px;
+    padding:8px 14px; font-size:12.5px; color:var(--ink-soft); box-shadow:var(--shadow);
+  }
+  .dot{ width:7px; height:7px; border-radius:50%; background:var(--ok); flex:none; }
+  .dot.live{ animation: blink 1.8s ease-in-out infinite; }
+  @keyframes blink{ 0%,100%{opacity:1; box-shadow:0 0 0 0 rgba(47,125,79,.4);} 50%{opacity:.55; box-shadow:0 0 0 5px rgba(47,125,79,0);} }
+  button.refresh{
+    background:var(--ink); color:var(--paper); border:none; border-radius:999px;
+    padding:9px 16px; font-family:'Public Sans',sans-serif; font-weight:600; font-size:13px;
+    cursor:pointer; display:flex; align-items:center; gap:7px; transition:transform .15s ease, background .15s ease;
+    box-shadow:var(--shadow);
+  }
+  button.refresh:hover{ transform:translateY(-1px); background:#000; }
+  button.refresh svg{ width:14px; height:14px; transition:transform .5s ease; }
+  button.refresh.spinning svg{ animation:spin 0.8s linear infinite; }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  .kpis{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:28px;
+  }
+  .kpi{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:18px 20px; box-shadow:var(--shadow); position:relative; overflow:hidden;
+  }
+  .kpi::before{
+    content:''; position:absolute; top:0; left:0; width:100%; height:3px;
+  }
+  .kpi.stations::before{ background:var(--gold); }
+  .kpi.regions::before{ background:var(--teal); }
+  .kpi.critical::before{ background:var(--crit); }
+  .kpi.finished::before{ background:var(--ok); }
+  .kpi .label{ font-size:13px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); font-weight:700; }
+  .kpi .value{ font-family:'IBM Plex Mono', monospace; font-size:34px; font-weight:700; margin-top:6px; line-height:1; }
+  .kpi .sub{ font-size:12.5px; color:var(--ink-soft); margin-top:6px; }
+
+  .controls{
+    display:flex; gap:12px; flex-wrap:wrap; align-items:center; margin-bottom:20px;
+  }
+  .search{
+    flex:1; min-width:220px; position:relative;
+  }
+  .search input{
+    width:100%; padding:12px 16px 12px 40px; border-radius:12px; border:1px solid var(--line);
+    background:var(--card); font-family:'Public Sans',sans-serif; font-size:14px; color:var(--ink);
+    box-shadow:var(--shadow); outline:none; transition:border-color .15s ease;
+  }
+  .search input:focus{ border-color:var(--gold); }
+  .search svg{ position:absolute; left:14px; top:50%; transform:translateY(-50%); width:16px; height:16px; color:var(--ink-soft); }
+  .chips{ display:flex; gap:8px; flex-wrap:wrap; }
+  .chip{
+    padding:9px 15px; border-radius:999px; border:1px solid var(--line); background:var(--card);
+    font-size:13px; font-weight:600; color:var(--ink-soft); cursor:pointer; transition:all .15s ease;
+    box-shadow:var(--shadow);
+  }
+  .chip.active{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  .chip:hover:not(.active){ border-color:var(--gold); color:var(--ink); }
+
+  .legend{
+    display:flex; flex-wrap:wrap; gap:10px 22px; align-items:center;
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:12px 18px; margin-bottom:20px; box-shadow:var(--shadow);
+  }
+  .legend-item{ display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:var(--ink); }
+  .legend-dot{ width:14px; height:14px; border-radius:5px; flex:none; }
+  .legend-warn{ color:var(--crit); }
+
+  .grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:16px;
+  }
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:20px; box-shadow:var(--shadow); position:relative; overflow:hidden;
+    animation: rise .4s ease both;
+  }
+  @keyframes rise{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+  .card.critical{ box-shadow: var(--shadow), inset 3px 0 0 var(--crit); }
+  .card-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:16px; }
+  .card-title{ font-family:'Bricolage Grotesque', sans-serif; font-weight:800; font-size:20px; line-height:1.25; }
+  .card-region{
+    font-size:12.5px; font-weight:700; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--gold-deep); margin-top:4px;
+  }
+  .status-badge{
+    font-size:12.5px; font-weight:800; padding:7px 12px; border-radius:999px; white-space:nowrap; flex:none;
+    display:flex; align-items:center; gap:5px;
+  }
+  .status-badge.finished{ background:var(--amber-bg); color:var(--gold-deep); }
+  .status-badge.default{ background:var(--paper-2); color:var(--ink-soft); }
+
+  .fuels{ display:flex; flex-direction:column; gap:9px; margin-bottom:14px; }
+  .fuel-row{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:13px 14px; border-radius:12px; font-size:14px; flex-wrap:wrap; row-gap:6px;
+  }
+  .fuel-row.f91{ background:var(--p91-bg); }
+  .fuel-row.f95{ background:var(--p95-bg); }
+  .fuel-row.fd{ background:var(--pd-bg); }
+  .fuel-label{ font-weight:800; display:flex; align-items:center; gap:10px; font-size:15px; }
+  .fuel-sub{ font-weight:500; font-size:11.5px; opacity:.75; display:block; margin-top:1px; }
+  .fuel-swatch{
+    width:26px; height:26px; border-radius:8px; flex:none;
+    display:flex; align-items:center; justify-content:center; color:#fff;
+    font-size:10px; font-weight:800; box-shadow: inset 0 0 0 2px rgba(255,255,255,.35);
+  }
+  .f91 .fuel-swatch{ background:var(--p91); }
+  .f95 .fuel-swatch{ background:var(--p95); }
+  .fd .fuel-swatch{ background:var(--pd); }
+  .f91 .fuel-label, .f91 .fuel-val{ color:#184f22; }
+  .f95 .fuel-label, .f95 .fuel-val{ color:#8f1e1e; }
+  .fd .fuel-label, .fd .fuel-val{ color:#7a5c05; }
+  .fuel-val{ font-family:'IBM Plex Mono', monospace; font-weight:800; font-size:19px; text-align:right; }
+  .fuel-val .unit{ font-size:11px; font-weight:600; opacity:.7; margin-left:3px; }
+  .fuel-val.neg{ color:var(--crit) !important; }
+  .fuel-val.empty{ color:var(--ink-soft) !important; font-weight:500; font-style:italic; font-size:13px; }
+  .fuel-supply{
+    flex-basis:100%; display:flex; align-items:center; gap:6px; font-size:11.5px; font-weight:600;
+    opacity:.8; padding-top:4px; border-top:1px dashed rgba(0,0,0,.12);
+  }
+  .fuel-supply svg{ width:11px; height:11px; flex:none; }
+
+  .card-meta{
+    display:flex; justify-content:space-between; align-items:center; padding-top:12px;
+    border-top:1px dashed var(--line); font-size:13px; color:var(--ink-soft); flex-wrap:wrap; gap:8px;
+  }
+  .card-meta .updated{ display:flex; align-items:center; gap:6px; font-weight:600; }
+  .card-meta svg{ width:14px; height:14px; }
+  .shift-pill{
+    font-size:11.5px; font-weight:800; padding:3px 9px; border-radius:999px; text-transform:uppercase;
+    letter-spacing:.03em;
+  }
+  .shift-pill.night{ background:#1c2430; color:#f6f2ea; }
+  .shift-pill.day{ background:var(--amber-bg); color:var(--gold-deep); }
+
+  .state{
+    text-align:center; padding:80px 20px; color:var(--ink-soft);
+  }
+  .state .spinner{
+    width:34px; height:34px; border-radius:50%; border:3px solid var(--line); border-top-color:var(--gold);
+    margin:0 auto 16px; animation:spin .8s linear infinite;
+  }
+  .state h3{ font-family:'Bricolage Grotesque', sans-serif; color:var(--ink); font-size:18px; margin:0 0 6px; }
+  .state button{
+    margin-top:16px; background:var(--ink); color:var(--paper); border:none; border-radius:999px;
+    padding:10px 20px; font-weight:600; cursor:pointer; font-family:'Public Sans',sans-serif;
+  }
+  .hidden{ display:none !important; }
+
+  footer{
+    text-align:center; color:var(--ink-soft); font-size:12px; margin-top:40px;
+    padding-top:20px; border-top:1px solid var(--line);
+  }
+  footer a{ color:var(--gold-deep); text-decoration:none; font-weight:600; }
+
+  @media(max-width:760px){
+    .kpis{ grid-template-columns:repeat(2,1fr); gap:10px; }
+    h1{ font-size:21px; }
+    .wrap{ padding:16px 14px 60px; }
+    header.top{ align-items:stretch; }
+    .top-right{ width:100%; justify-content:space-between; }
+    .sync-pill{ flex:1; }
+    button.refresh{ flex:none; }
+    .kpi{ padding:14px 14px; }
+    .kpi .value{ font-size:26px; }
+    .card{ padding:16px; }
+    .card-title{ font-size:18px; }
+    .fuel-swatch{ width:24px; height:24px; }
+    .fuel-val{ font-size:18px; }
+    #controlsBar{
+      position:sticky; top:0; z-index:20; margin:0 -14px 16px; padding:10px 14px 12px;
+      background:rgba(246,242,234,.92); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+    .search input{ font-size:16px; padding:13px 16px 13px 42px; }
+    .chips{ flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none; padding-bottom:2px; }
+    .chips::-webkit-scrollbar{ display:none; }
+    .chip{ flex:none; padding:11px 16px; }
+    button.refresh{ padding:11px 18px; }
+  }
+
+  @media(max-width:420px){
+    .kpis{ grid-template-columns:1fr 1fr; }
+    .kpi .value{ font-size:24px; }
+    .brand-mark{ width:38px; height:38px; }
+    .brand p{ font-size:12px; }
+    .legend{ padding:10px 12px; gap:8px 16px; }
+    .legend-item{ font-size:12px; }
+    .grid{ grid-template-columns:1fr; }
+  }
+
+  @supports(padding:max(0px)){
+    .wrap{ padding-left:max(20px, env(safe-area-inset-left)); padding-right:max(20px, env(safe-area-inset-right)); }
+  }
+</style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fffdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 22h12"/><path d="M4 9h8V4a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1z"/><path d="M4 9v10a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9"/><path d="M12 12h2a2 2 0 0 1 2 2v3a1.5 1.5 0 0 0 3 0V8.5L16 5"/></svg>
+      </div>
+      <div>
+        <h1>Continued Stock</h1>
+        <p>Reben Petroleum — live station levels, straight from the sheet</p>
+      </div>
+    </div>
+    <div class="top-right">
+      <div class="sync-pill"><span class="dot live" id="dot"></span><span id="syncText">Connecting…</span></div>
+      <button class="refresh" id="refreshBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  <div class="kpis">
+    <div class="kpi stations">
+      <div class="label">Stations</div>
+      <div class="value" id="kpiStations">—</div>
+      <div class="sub">Reporting today</div>
+    </div>
+    <div class="kpi regions">
+      <div class="label">Regions</div>
+      <div class="value" id="kpiRegions">—</div>
+      <div class="sub" id="kpiRegionsSub">—</div>
+    </div>
+    <div class="kpi critical">
+      <div class="label">Negative Stock</div>
+      <div class="value" id="kpiCritical">—</div>
+      <div class="sub">Needs attention</div>
+    </div>
+    <div class="kpi finished">
+      <div class="label">Marked Finished</div>
+      <div class="value" id="kpiFinished">—</div>
+      <div class="sub">Status flagged</div>
+    </div>
+  </div>
+
+  <div class="controls" id="controlsBar">
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      <input id="searchInput" type="text" placeholder="Search station name…">
+    </div>
+    <div class="chips" id="regionChips"></div>
+  </div>
+
+  <div class="legend">
+    <span class="legend-item"><span class="legend-dot" style="background:var(--p91)"></span>91 = Green Pump</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--p95)"></span>95 = Red Pump</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--pd)"></span>Diesel = Yellow Pump</span>
+    <span class="legend-item legend-warn">⚠ Red number = tank is negative, check now</span>
+  </div>
+
+  <div id="loadingState" class="state">
+    <div class="spinner"></div>
+    <h3>Fetching live stock data…</h3>
+    <p>Pulling the latest numbers from Google Sheets</p>
+  </div>
+
+  <div id="errorState" class="state hidden">
+    <h3>Couldn't load the sheet</h3>
+    <p id="errorMsg">Something went wrong while fetching data.</p>
+    <button id="retryBtn">Try again</button>
+  </div>
+
+  <div class="grid hidden" id="grid"></div>
+
+  <footer>
+    Live from <a href="https://docs.google.com/spreadsheets/d/1k-2trbMhyzRm9Ch6f1Ex3UU8_riJ9wMWNxomofKOGPA/edit#gid=1847936868" target="_blank" rel="noopener">Stations Stock — Continued Stock</a> · auto-refreshes every 5 minutes
+  </footer>
+
+</div>
+
+<script>
+  const SHEET_ID = "1k-2trbMhyzRm9Ch6f1Ex3UU8_riJ9wMWNxomofKOGPA";
+  const GID = "1847936868";
+  const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
+
+  const els = {
+    loading: document.getElementById('loadingState'),
+    error: document.getElementById('errorState'),
+    errorMsg: document.getElementById('errorMsg'),
+    grid: document.getElementById('grid'),
+    syncText: document.getElementById('syncText'),
+    dot: document.getElementById('dot'),
+    refreshBtn: document.getElementById('refreshBtn'),
+    retryBtn: document.getElementById('retryBtn'),
+    searchInput: document.getElementById('searchInput'),
+    regionChips: document.getElementById('regionChips'),
+    kpiStations: document.getElementById('kpiStations'),
+    kpiRegions: document.getElementById('kpiRegions'),
+    kpiRegionsSub: document.getElementById('kpiRegionsSub'),
+    kpiCritical: document.getElementById('kpiCritical'),
+    kpiFinished: document.getElementById('kpiFinished'),
+  };
+
+  let allStations = [];
+  let activeRegion = 'All';
+  let searchTerm = '';
+
+  function cellText(row, idx){
+    const c = row.c[idx];
+    if(!c) return '';
+    if(c.f !== undefined && c.f !== null) return String(c.f).trim();
+    if(c.v !== undefined && c.v !== null) return String(c.v).trim();
+    return '';
+  }
+
+  function cellNumber(row, idx){
+    const c = row.c[idx];
+    if(!c || c.v === undefined || c.v === null || c.v === '') return null;
+    const n = typeof c.v === 'number' ? c.v : parseFloat(c.v);
+    return isNaN(n) ? null : n;
+  }
+
+  function parseGviz(text){
+    const start = text.indexOf('(');
+    const end = text.lastIndexOf(')');
+    const json = JSON.parse(text.slice(start + 1, end));
+    const rows = json.table.rows || [];
+    const stations = [];
+    for(const row of rows){
+      if(!row.c) continue;
+      const stationName = cellText(row, 2);
+      if(!stationName) continue;
+      stations.push({
+        slNo: cellText(row, 0),
+        region: cellText(row, 1) || 'Unassigned',
+        name: stationName,
+        date: cellText(row, 3),
+        shift: cellText(row, 4),
+        v91: cellNumber(row, 5),
+        v95: cellNumber(row, 6),
+        vD: cellNumber(row, 7),
+        status: cellText(row, 8),
+        supply91: cellText(row, 10),
+        supply95: cellText(row, 11),
+        supplyD: cellText(row, 12),
+      });
+    }
+    return stations;
+  }
+
+  function fmt(n){
+    if(n === null) return null;
+    return Math.round(n).toLocaleString('en-US');
+  }
+
+  function fuelRow(cls, icon, label, sub, value, supplyDate){
+    const supplyHtml = supplyDate
+      ? `<span class="fuel-supply"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>Last Supply: ${supplyDate}</span>`
+      : `<span class="fuel-supply"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg>Last Supply: —</span>`;
+    if(value === null){
+      return `<div class="fuel-row ${cls}"><span class="fuel-label"><span class="fuel-swatch">${icon}</span><span>${label}<span class="fuel-sub">${sub}</span></span></span><span class="fuel-val empty">— no data —</span>${supplyHtml}</div>`;
+    }
+    const neg = value < 0;
+    return `<div class="fuel-row ${cls}"><span class="fuel-label"><span class="fuel-swatch">${icon}</span><span>${label}<span class="fuel-sub">${sub}</span></span></span><span class="fuel-val ${neg ? 'neg' : ''}">${neg ? '⚠ ' : ''}${fmt(value)}<span class="unit">L</span></span>${supplyHtml}</div>`;
+  }
+
+  function render(){
+    const filtered = allStations.filter(s => {
+      const regionOk = activeRegion === 'All' || s.region === activeRegion;
+      const searchOk = !searchTerm || s.name.toLowerCase().includes(searchTerm) || s.region.toLowerCase().includes(searchTerm);
+      return regionOk && searchOk;
+    });
+
+    els.grid.innerHTML = filtered.map(s => {
+      const isCritical = [s.v91, s.v95, s.vD].some(v => v !== null && v < 0);
+      const statusHtml = s.status
+        ? `<span class="status-badge finished">✔ ${s.status}</span>`
+        : '';
+      const shiftClass = (s.shift || '').toLowerCase().includes('day') ? 'day' : 'night';
+      const shiftHtml = s.shift
+        ? `<span class="shift-pill ${shiftClass}">${s.shift}</span>`
+        : '';
+      return `
+        <div class="card ${isCritical ? 'critical' : ''}">
+          <div class="card-top">
+            <div>
+              <div class="card-title">${s.name}</div>
+              <div class="card-region">${s.region}</div>
+            </div>
+            ${statusHtml}
+          </div>
+          <div class="fuels">
+            ${fuelRow('f91', '91', 'Petrol 91', 'Green pump', s.v91, s.supply91)}
+            ${fuelRow('f95', '95', 'Petrol 95', 'Red pump', s.v95, s.supply95)}
+            ${fuelRow('fd', 'D', 'Diesel', 'Yellow pump', s.vD, s.supplyD)}
+          </div>
+          <div class="card-meta">
+            <span class="updated">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+              ${s.date || '—'}
+            </span>
+            ${shiftHtml}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    if(filtered.length === 0){
+      els.grid.innerHTML = `<div class="state" style="grid-column:1/-1;"><h3>No stations match</h3><p>Try a different search or region filter.</p></div>`;
+    }
+  }
+
+  function renderChips(){
+    const regions = ['All', ...new Set(allStations.map(s => s.region))];
+    els.regionChips.innerHTML = regions.map(r =>
+      `<button class="chip ${r === activeRegion ? 'active' : ''}" data-region="${r}">${r}</button>`
+    ).join('');
+    els.regionChips.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        activeRegion = chip.dataset.region;
+        renderChips();
+        render();
+      });
+    });
+  }
+
+  function renderKpis(){
+    const regions = new Set(allStations.map(s => s.region));
+    const criticalCount = allStations.filter(s => [s.v91, s.v95, s.vD].some(v => v !== null && v < 0)).length;
+    const finishedCount = allStations.filter(s => s.status && s.status.trim() !== '').length;
+    els.kpiStations.textContent = allStations.length;
+    els.kpiRegions.textContent = regions.size;
+    els.kpiRegionsSub.textContent = [...regions].slice(0, 3).join(', ') + (regions.size > 3 ? '…' : '');
+    els.kpiCritical.textContent = criticalCount;
+    els.kpiFinished.textContent = finishedCount;
+  }
+
+  async function loadData(isRefresh){
+    els.error.classList.add('hidden');
+    if(!isRefresh){
+      els.loading.classList.remove('hidden');
+      els.grid.classList.add('hidden');
+    } else {
+      els.refreshBtn.classList.add('spinning');
+    }
+    els.syncText.textContent = 'Syncing…';
+
+    try{
+      const res = await fetch(GVIZ_URL, {cache: 'no-store'});
+      if(!res.ok) throw new Error(`Sheet responded with status ${res.status}`);
+      const text = await res.text();
+      allStations = parseGviz(text);
+      renderChips();
+      renderKpis();
+      render();
+
+      els.loading.classList.add('hidden');
+      els.grid.classList.remove('hidden');
+      const now = new Date();
+      els.syncText.textContent = `Synced ${now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}`;
+    } catch(err){
+      console.error(err);
+      els.loading.classList.add('hidden');
+      els.grid.classList.add('hidden');
+      els.error.classList.remove('hidden');
+      els.errorMsg.textContent = 'Make sure the sheet is shared as "Anyone with the link can view", then try again. (' + err.message + ')';
+      els.syncText.textContent = 'Sync failed';
+    } finally {
+      els.refreshBtn.classList.remove('spinning');
+    }
+  }
+
+  els.refreshBtn.addEventListener('click', () => loadData(true));
+  els.retryBtn.addEventListener('click', () => loadData(false));
+  els.searchInput.addEventListener('input', (e) => {
+    searchTerm = e.target.value.trim().toLowerCase();
+    render();
+  });
+
+  loadData(false);
+  setInterval(() => loadData(true), 5 * 60 * 1000);
+</script>
+</body>
+</html>
