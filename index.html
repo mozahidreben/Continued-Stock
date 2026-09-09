@@ -221,6 +221,8 @@
             background: rgba(8, 8, 10, 0.72);
             backdrop-filter: blur(18px) saturate(140%);
             border-bottom: 1px solid var(--border);
+            transform: translateZ(0);
+            will-change: transform;
         }
         .header-inner {
             max-width: 1560px;
@@ -251,6 +253,7 @@
             box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 8px 24px -6px var(--glow);
             flex-shrink: 0;
             overflow: hidden;
+            transform: translateZ(0);
         }
         .mark::before {
             display: none;
@@ -316,6 +319,7 @@
             border-radius: 2px;
             animation: pulse-bar 1.1s ease-in-out infinite;
             box-shadow: 0 0 6px 0 #39d98a;
+            will-change: transform;
         }
         .pulse-bars span:nth-child(1) {
             height: 40%;
@@ -415,6 +419,7 @@
             cursor: pointer;
             transition: all .15s ease;
             white-space: nowrap;
+            will-change: transform;
         }
         .btn-ghost {
             background: var(--glass);
@@ -519,6 +524,8 @@
             backdrop-filter: blur(18px);
             transition: box-shadow .3s ease, border-color .3s ease;
             overflow: hidden;
+            transform: translateZ(0);
+            will-change: transform, box-shadow;
         }
         .glass-card:hover {
             border-color: var(--border-strong);
@@ -590,6 +597,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            will-change: transform;
         }
         .ring::before {
             content: '';
@@ -599,6 +607,7 @@
             background: conic-gradient(from 0deg, transparent 0%, rgba(255, 178, 56, 0.5) 8%, transparent 16%);
             animation: ring-radar 3.2s linear infinite;
             z-index: 0;
+            will-change: transform;
         }
         @keyframes ring-radar {
             to {
@@ -629,6 +638,7 @@
             background-clip: text;
             color: transparent;
             animation: text-shimmer 3.5s ease-in-out infinite;
+            will-change: background-position;
         }
         @keyframes text-shimmer {
             0% {
@@ -753,6 +763,7 @@
             color: transparent;
             text-shadow: 0 0 24px rgba(255, 178, 56, .35);
             animation: text-shimmer 4s ease-in-out infinite;
+            will-change: background-position;
         }
         .vol-value.g95 span:first-child {
             background: linear-gradient(100deg, #fff 30%, var(--accent) 50%, #fff 70%);
@@ -762,6 +773,7 @@
             color: transparent;
             text-shadow: 0 0 24px rgba(255, 91, 56, .4);
             animation: text-shimmer 4s ease-in-out infinite .3s;
+            will-change: background-position;
         }
         .vol-value.gd span:first-child {
             color: #fff;
@@ -778,6 +790,7 @@
             border-radius: 99px;
             position: relative;
             overflow: hidden;
+            will-change: transform;
         }
         .vol-bar.g91 {
             background: linear-gradient(90deg, #e08a2f, var(--accent-2));
@@ -797,6 +810,7 @@
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
             animation: bar-shimmer 2.6s ease-in-out infinite;
+            will-change: transform;
         }
         @keyframes bar-shimmer {
             0% {
@@ -894,6 +908,7 @@
             cursor: pointer;
             transition: all .15s ease;
             white-space: nowrap;
+            will-change: transform;
         }
         .region-pill:hover {
             border-color: var(--border-strong);
@@ -978,6 +993,7 @@
             background: linear-gradient(180deg, var(--glass-strong), var(--glass));
             border: 1px solid var(--border);
             box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 14px 34px -18px rgba(0, 0, 0, 0.7);
+            transform: translateZ(0);
         }
         .live-clock::before {
             content: '';
@@ -992,6 +1008,7 @@
             animation: mark-spin 7s linear infinite;
             opacity: .6;
             pointer-events: none;
+            will-change: transform;
         }
         .live-clock .pulse-bars {
             height: 10px;
@@ -1051,6 +1068,7 @@
         tbody tr {
             border-bottom: 1px solid rgba(255, 255, 255, 0.055);
             transition: background .12s ease;
+            will-change: transform, opacity;
         }
         tbody tr:last-child {
             border-bottom: none;
@@ -1181,6 +1199,7 @@
             background: linear-gradient(90deg, #8a8890, #c8c6cc);
             position: relative;
             overflow: hidden;
+            will-change: transform;
         }
         .fill-bar.low {
             background: linear-gradient(90deg, var(--accent-2), var(--low));
@@ -1201,6 +1220,7 @@
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.7), transparent);
             animation: bar-shimmer 2.6s ease-in-out infinite;
+            will-change: transform;
         }
 
         .status-row {
@@ -1252,6 +1272,7 @@
             padding: 12px 14px;
             margin-bottom: 16px;
             box-shadow: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 18px 40px -22px rgba(0, 0, 0, 0.7);
+            transform: translateZ(0);
         }
         .mobile-search-bar svg {
             color: var(--accent-2);
@@ -1314,6 +1335,7 @@
             border: none;
             font-size: 28px;
             text-decoration: none;
+            will-change: transform;
         }
         .whatsapp-float:hover {
             transform: scale(1.08);
@@ -2258,7 +2280,7 @@
 
         <div class="mobile-search-bar" id="mobile-search-bar">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.6" y2="16.6"/></svg>
-            <input type="text" id="mobile-search-input" placeholder="Search station…" autocomplete="off" oninput="handleSearchInput(this.value)">
+            <input type="text" id="mobile-search-input" placeholder="Search station…" autocomplete="off" oninput="debouncedSearch(this.value)">
             <button class="mobile-search-clear" id="mobile-search-clear" onclick="handleSearchInput('')" aria-label="Clear search">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
@@ -2413,6 +2435,15 @@
 </div>
 
 <script>
+    // ── Debounce helper ──
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
     const SPREADSHEET_ID = '1k-2trbMhyzRm9Ch6f1Ex3UU8_riJ9wMWNxomofKOGPA';
     const GID = '1847936868';
     const CSV_URL =
@@ -2837,6 +2868,9 @@
         updateWhatsAppButton();
     }
 
+    // Debounced version for mobile input
+    const debouncedSearch = debounce(handleSearchInput, 200);
+
     function updateWhatsAppButton() {
         const searchValue = document.getElementById('mobile-search-input').value.toLowerCase().trim();
         const btn = document.getElementById('whatsapp-btn');
@@ -2950,10 +2984,15 @@
 
     function renderTable(data) {
         const tbody = document.getElementById('table-body');
-        tbody.innerHTML = '';
+        // Clear with a document fragment for better performance
+        const fragment = document.createDocumentFragment();
 
         if (data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No stations match the current filters.</td></tr>`;
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td colspan="5" class="empty-state">No stations match the current filters.</td>`;
+            fragment.appendChild(tr);
+            tbody.innerHTML = '';
+            tbody.appendChild(fragment);
             return;
         }
 
@@ -2982,8 +3021,12 @@
                 ${stockCell(item.stockD, item.supplyD, thresh.stockD, 'Diesel')}
                 <td class="center" data-label="Status"><div class="td-value">${statusCell(item.status)}</div></td>
             `;
-            tbody.appendChild(tr);
+            fragment.appendChild(tr);
         });
+
+        // Replace tbody content with fragment
+        tbody.innerHTML = '';
+        tbody.appendChild(fragment);
     }
 
     function stockCell(stock, supplyDate, thresholdVal, label) {
@@ -3065,11 +3108,11 @@
         if (mobileInput && desktopInput) {
             mobileInput.addEventListener('input', function() {
                 if (desktopInput.value !== this.value) desktopInput.value = this.value;
-                handleSearchInput(this.value);
+                // debounced already attached to oninput
             });
             desktopInput.addEventListener('input', function() {
                 if (mobileInput.value !== this.value) mobileInput.value = this.value;
-                handleSearchInput(this.value);
+                handleSearchInput(this.value); // desktop uses direct (no debounce needed)
             });
         }
 
