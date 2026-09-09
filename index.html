@@ -2852,12 +2852,12 @@
             btn.classList.add('show');
             // Set the share URL
             const station = filtered[0]; // share first match
-            const msg = `📊 *Reben Petroleum*\n\n` +
-                `🏢 *Station:* ${station.stationName}\n` +
+            const msg = `⛽ *Reben Petroleum*\n\n` +
+                ` *Station:* ${station.stationName}\n` +
                 `📍 *Region:* ${station.region}\n` +
-                `⛽ *91 Octane:* ${station.stock91.toLocaleString()} L (Sup: ${station.supply91})\n` +
-                `⛽ *95 Octane:* ${station.stock95.toLocaleString()} L (Sup: ${station.supply95})\n` +
-                `🛢️ *Diesel:* ${station.stockD.toLocaleString()} L (Sup: ${station.supplyD})\n` +
+                `🟢 *91:* ${station.stock91.toLocaleString()} L (Sup: ${station.supply91})\n` +
+                `🔴 *95:* ${station.stock95.toLocaleString()} L (Sup: ${station.supply95})\n` +
+                `🟡 *D:* ${station.stockD.toLocaleString()} L (Sup: ${station.supplyD})\n` +
                 `📌 *Status:* ${station.status || '—'}\n` +
                 `🕒 *Updated:* ${station.lastUpdateDate || '—'}\n` +
                 `👤 *Shift:* ${station.shift || '—'}`;
